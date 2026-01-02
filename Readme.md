@@ -1,95 +1,106 @@
-# 🍚 kacchiOS
+# 🍚 kacchiOS - Educational Baremetal OS
 
-A minimal, educational baremetal operating system with scheduler, memory manager, and process manager.
+> A complete, modular operating system kernel demonstrating core OS concepts through clean, understandable code.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Platform](https://img.shields.io/badge/platform-x86-lightgrey.svg)]()
+[![Platform](https://img.shields.io/badge/platform-x86%2032--bit-blue.svg)]()
+[![Language](https://img.shields.io/badge/language-C%2FASM-orange.svg)]()
 
-## 📖 Overview
+## 🎯 Overview
 
-kacchiOS is a complete bare-metal OS kernel built from scratch for educational purposes. It demonstrates core OS concepts including process scheduling, dynamic memory allocation, and process management.
+**kacchiOS** is a complete bare-metal OS kernel built from scratch for educational purposes. It demonstrates core operating system concepts including:
 
-## ✨ Current Features
+- 🔄 **Cooperative Task Scheduling** — Round-robin with priority support
+- 💾 **Dynamic Memory Management** — First-fit heap allocation with coalescing
+- 🔗 **Process Management** — Multi-process with parent-child relationships
+- 📡 **Serial Communication** — Interactive CLI shell with 8 commands
+- 🏗️ **Modular Architecture** — Clean separation of concerns
 
-### Core Components
-- ✅ **Multiboot-compliant bootloader** — Boots via GRUB/QEMU
-- ✅ **Serial I/O driver** (COM1) — Communication via serial port
-- ✅ **Basic string utilities** — Essential string operations
-- ✅ **Clean, documented code** — Well-structured and extensible
+Perfect for students learning OS fundamentals through hands-on implementation.
+
+## ✨ Features at a Glance
 
 ### Scheduler (Cooperative Round-Robin)
-- ✅ **Task creation** — `create_task(fn, priority)`
-- ✅ **Cooperative yielding** — `yield()` for manual task switching
-- ✅ **Priority scheduling** — Tasks scheduled by priority level
-- ✅ **Task sleep** — `sleep_ticks(n)` to block for n scheduler ticks
-- ✅ **Process listing** — `ps` command shows all scheduler tasks
-- ✅ **Task exit** — `exit_task()` for clean task termination
+| Feature | Details |
+|---------|---------|
+| **Task Creation** | `create_task(fn, priority)` with up to 16 tasks |
+| **Priority Scheduling** | Tasks selected by priority + round-robin |
+| **Cooperative Yielding** | Manual context switches via `yield()` |
+| **Task Sleep** | `sleep_ticks(n)` blocks for n ticks |
+| **Task States** | RUNNING, READY, BLOCKED, ZOMBIE |
+| **Tick Tracking** | Simulated time counter for scheduling |
 
-### Memory Manager (Dynamic Heap Allocation)
-- ✅ **malloc()** — Allocate memory blocks (first-fit algorithm)
-- ✅ **free()** — Deallocate memory
-- ✅ **realloc()** — Resize existing allocations
-- ✅ **Free-list coalescing** — Merges adjacent free blocks
-- ✅ **Block splitting** — Efficient memory utilization
-- ✅ **Heap statistics** — `mem` command shows heap usage
-- ✅ **Debug dump** — `memdump` shows all allocations with addresses
-- ✅ **Double-free detection** — Warns on invalid frees
+### Memory Manager (Dynamic Heap)
+| Feature | Details |
+|---------|---------|
+| **malloc()** | First-fit heap allocation |
+| **free()** | Deallocate with double-free detection |
+| **realloc()** | Resize existing allocations |
+| **Coalescing** | Adjacent free blocks automatically merge |
+| **Block Splitting** | Efficient memory utilization |
+| **Heap Statistics** | `mem` command shows usage breakdown |
+| **Debug Dump** | `memdump` shows all allocations |
 
 ### Process Manager
-- ✅ **Process creation** — `proc_create(ppid)` creates new process
-- ✅ **Process termination** — `proc_exit(code)` with exit codes
-- ✅ **Parent-child relationships** — Tracks process hierarchy
-- ✅ **Process waiting** — `proc_wait(pid, &code)` to reap zombies
-- ✅ **Process queries** — `proc_getpid()`, `proc_getppid()`
-- ✅ **Process listing** — `plist` command shows all processes
-- ✅ **Signal handling** — Framework for signal registration and sending
-- ✅ **Stack allocation** — Each process gets its own stack
-- ✅ **CPU accounting** — Tracks CPU ticks per process
-- ✅ **Process states** — CREATED, RUNNING, BLOCKED, ZOMBIE
+| Feature | Details |
+|---------|---------|
+| **Process Creation** | `proc_create(ppid)` creates processes |
+| **Process Exit** | `proc_exit(code)` with exit codes |
+| **Parent-Child Tracking** | Process hierarchy with up to 8 children |
+| **Process Waiting** | `proc_wait()` reaps zombies |
+| **Process Queries** | `proc_getpid()`, `proc_getppid()` |
+| **Signal Handling** | Framework for 16 signals per process |
+| **Process States** | CREATED, RUNNING, BLOCKED, ZOMBIE |
+| **CPU Accounting** | Tracks ticks per process |
 
-### CLI Commands
-| Command | Description |
-|---------|-------------|
-| `ps` | List all scheduler tasks with state and priority |
-| `plist` | List all processes with PID, PPID, state, and CPU ticks |
-| `mem` | Show memory statistics (total, used, free, block counts) |
-| `memdump` | Debug dump of all heap allocations with addresses |
-| `clear` | Clear the screen (ANSI escape codes) |
+### Interactive CLI Shell
+| Command | Function |
+|---------|----------|
+| `ps` | List all tasks (scheduler view) |
+| `plist` | List all processes (detailed) |
+| `mem` | Show memory statistics |
+| `memdump` | Debug: dump all allocations |
+| `clear` | Clear screen (ANSI codes) |
 | `yield` | Manually yield to scheduler |
-| `exit` | Shutdown the OS and halt the CPU |
+| `create` | Create a new process |
+| `exit` | Shutdown OS and return to terminal |
 | `help` | Show available commands |
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
+Choose your platform:
+
+**macOS with Docker:**
 ```bash
-# On macOS (with Docker)
 brew install docker
-
-# On Linux
-sudo apt-get install docker.io
-
-# On Windows
-# Download Docker Desktop
-```
-
-### Build and Run
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/kacchiOS.git
-cd kacchiOS
-
-# Build Docker image (one time)
 docker build -t kacchios-build --platform linux/amd64 .
-
-# Build and run the OS
-docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build bash -c "cd /workspace && make run"
 ```
 
-You should see:
+**Linux with native tools:**
+```bash
+sudo apt-get install build-essential gcc-multilib qemu-system-x86 make
+```
+
+**Windows:**
+Install Docker Desktop and set up WSL2
+
+### Run the OS
+
+**Using Docker (recommended):**
+```bash
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
+```
+
+**Using native build (Linux only):**
+```bash
+make clean && make run
+```
+
+### Expected Output
+
 ```
 ========================================
     kacchiOS - Minimal Baremetal OS
@@ -107,18 +118,12 @@ kacchiOS>
 
 ### Interactive Demo
 
-Try these commands:
-
 ```bash
 kacchiOS> ps
 PID     STATE   PRIO    WAKE
 0       RUN     0       0
 1       READY   1       0
 2       READY   1       0
-
-kacchiOS> plist
-PID     PPID    STATE           CPU
-0       4294967295      RUNNING 0
 
 kacchiOS> mem
 [MEM STATS]
@@ -128,15 +133,18 @@ kacchiOS> mem
   Free blocks:  1
   Alloc blocks: 0
 
-kacchiOS> memdump
-[MEM DUMP]
-  [0] addr=0x00100000 size=65536 state=FREE
+kacchiOS> plist
+PID     PPID    STATE           CPU
+0       4294967295      RUNNING 0
 
-kacchiOS> clear
-(screen clears)
+kacchiOS> create
+Creating process...
+Process created successfully!
+PID: 1
 
 kacchiOS> exit
 Shutting down kacchiOS...
+kacchiOS exiting...
 (returns to terminal)
 ```
 
@@ -144,45 +152,42 @@ Shutting down kacchiOS...
 
 ```
 kacchiOS/
-├── src/                           # Source code (organized by subsystem)
-│   ├── boot/                      # Bootloader and system initialization
-│   │   ├── boot.S                 # x86 multiboot bootloader (Assembly)
-│   │   ├── sched.S                # Context switch assembly routine
-│   │   └── link.ld                # Linker script for kernel layout
+├── src/                              # Source code (organized by subsystem)
+│   ├── boot/                         # System initialization
+│   │   ├── boot.S                    # x86 multiboot bootloader (Assembly)
+│   │   ├── sched.S                   # Context switch routine (Assembly)
+│   │   └── link.ld                   # Linker script for kernel layout
 │   │
-│   ├── kernel/                    # Core kernel subsystems
-│   │   ├── kernel.c               # Main kernel entry + interactive CLI shell
-│   │   ├── types.h                # Basic type definitions
-│   │   ├── io.h                   # I/O port access macros
-│   │   │
-│   │   ├── scheduler.c/.h         # Cooperative round-robin task scheduler
-│   │   ├── memory.c/.h            # Dynamic heap allocator (malloc/free)
-│   │   ├── process.c/.h           # Process manager with parent-child tracking
-│   │   └── string.c/.h            # String utility functions
+│   ├── kernel/                       # Core kernel subsystems
+│   │   ├── kernel.c                  # Main kernel + interactive CLI shell
+│   │   ├── types.h                   # Type definitions
+│   │   ├── io.h                      # I/O port macros
+│   │   ├── scheduler.c/.h            # Task scheduler (cooperative round-robin)
+│   │   ├── memory.c/.h               # Dynamic heap allocator
+│   │   ├── process.c/.h              # Process manager
+│   │   └── string.c/.h               # String utilities
 │   │
-│   ├── drivers/                   # Hardware device drivers
-│   │   ├── serial.c/.h            # Serial port (COM1) driver at 0x3F8
-│   │   └── (extensible for more drivers)
-│   │
-│   └── managers/                  # (Reserved for future subsystems)
+│   └── drivers/                      # Hardware device drivers
+│       └── serial.c/.h               # Serial port (COM1) driver
 │
-├── bin/                           # Compiled object files (generated by make)
-├── config/                        # Configuration and metadata
-│   ├── Dockerfile                 # Docker container for reproducible builds
-│   ├── LICENSE                    # MIT License
-│   ├── ORGANIZATION.md            # Project organization notes
-│   ├── RESTRUCTURING_SUMMARY.md   # Summary of restructuring changes
-│   └── OS_LAB_Project.pdf         # Project specification
+├── bin/                              # Compiled object files (generated)
+├── config/                           # Configuration and documentation
+│   ├── LICENSE                       # MIT License
+│   ├── Dockerfile                    # Docker build definition
+│   ├── Makefile                      # Build system
+│   ├── .gitignore                    # Git ignore rules
+│   ├── ORGANIZATION.md               # Project organization guide
+│   ├── RESTRUCTURING_SUMMARY.md      # Restructuring notes
+│   └── OS_LAB_Project.pdf            # Project specification
 │
-├── docs/                          # Documentation and build guides
-│   ├── PROJECT_STRUCTURE.md       # Complete directory structure documentation
-│   ├── BUILD_GUIDE.md             # Comprehensive build and development guide
-│   └── (additional documentation)
+├── docs/                             # Documentation
+│   ├── BUILD_GUIDE.md                # Comprehensive build guide
+│   └── (additional guides)
 │
-├── Makefile                       # Build automation (src files → kernel.elf)
-├── kernel.elf                     # Final bootable kernel executable
-├── README.md                      # This file
-└── .git/                          # Git version control
+├── kernel.elf                        # Final bootable kernel (generated)
+├── Readme.md                         # This file
+└── .git/                             # Git repository
+
 ```
 
 ### Directory Purposes
@@ -190,202 +195,321 @@ kacchiOS/
 | Directory | Purpose |
 |-----------|---------|
 | `src/boot/` | CPU initialization, bootloader, context switching |
-| `src/kernel/` | Scheduler, memory manager, process manager, kernel logic |
+| `src/kernel/` | Scheduler, memory manager, process manager, core logic |
 | `src/drivers/` | Hardware drivers (serial, future: keyboard, disk) |
-| `src/managers/` | Reserved for future subsystems |
 | `bin/` | Compiled .o files (auto-generated) |
 | `config/` | Configuration files, Docker, licenses, specs |
-| `docs/` | Complete documentation and guides |
+| `docs/` | Complete project documentation |
 
-## 🛠️ Build System
+## 🛠️ Build & Deployment
 
-### Makefile Overview
-
-The Makefile automates compilation of the modular source tree:
+### Build System Overview
 
 ```
-src/ (organized code)
+src/ (organized source)
   ↓
-gcc/as (compile and assemble)
+gcc/as (compile & assemble)
   ↓
-bin/ (object files: .o)
+bin/ (object files)
   ↓
-ld (link with link.ld script)
+ld (link with linker script)
   ↓
 kernel.elf (bootable image)
   ↓
-qemu (emulation)
+qemu (x86 emulation)
 ```
 
-### Include Paths
+### Build Commands
 
-The Makefile is configured with include paths for all subsystems:
-- `-Isrc/kernel` — Core scheduler, memory, process managers
-- `-Isrc/drivers` — Serial driver and other hardware
-- `-Isrc/managers` — Future subsystems
-- `-Isrc` — Root includes
-
-### Makefile Targets
-
-| Command | Description |
-|---------|-------------|
-| `make` or `make all` | Build kernel.elf from source |
-| `make run` | Build and run in QEMU (serial terminal mode) |
-| `make run-vga` | Build and run in QEMU (graphical window) |
-| `make debug` | Build and run with GDB debugging support |
-| `make clean` | Remove all build artifacts (bin/*.o, kernel.elf) |
-
-### Build Without Docker
-
-On Linux with x86 build tools:
+**Using Docker (Recommended):**
 ```bash
-# Requires: gcc, binutils, nasm, make (multilib support for -m32)
-make clean
-make all
-make run
-```
-
-### Docker-Based Build
-
-Recommended for cross-platform compatibility:
-```bash
-# Build the image once
+# First time: build Docker image
 docker build -t kacchios-build --platform linux/amd64 .
 
-# Run builds in containers
-docker run --rm --platform linux/amd64 -v $(pwd):/workspace kacchios-build make
+# Then: run builds in container
 docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
 ```
 
-## 📚 Architecture Details
+**Using native Linux tools:**
+```bash
+# Requires: gcc, binutils, make with -m32 multilib support
+make clean  # Remove old builds
+make        # Compile and link
+make run    # Launch in QEMU
+```
+
+### Makefile Targets
+
+| Command | Purpose |
+|---------|---------|
+| `make` | Build kernel.elf from source |
+| `make run` | Build + run in QEMU (serial mode) |
+| `make run-vga` | Build + run in QEMU (GUI window) |
+| `make debug` | Build + run with GDB support |
+| `make clean` | Remove build artifacts |
+
+### Compiler Configuration
+
+- **Flags**: `-m32 -ffreestanding -O2 -Wall -Wextra`
+- **Include paths**: `src/kernel src/drivers src/managers src/`
+- **Linker**: x86 32-bit ELF (`-m elf_i386`)
+- **Target**: QEMU x86 emulator
+
+## 📚 Technical Architecture
 
 ### Memory Layout
 ```
 0x00000000 - 0x000FFFFF: Reserved (bootloader, BIOS)
 0x00100000 - 0x0011FFFF: Heap (64KB) - Managed by memory manager
-0x00120000 - 0x00200000: Available for future expansion
+0x00120000 onwards:      Available for future expansion
 ```
 
-### Scheduler Algorithm
-- **Type**: Cooperative round-robin with priorities
-- **Context Switch**: Manual stack switching via assembly (`context_switch()`)
-- **Tick System**: Simulated time tracking for sleep operations
-- **Selection**: Priority-based (higher priority runs first)
+### Scheduler Design
+- **Type**: Cooperative round-robin with priority levels
+- **Context Switch**: Manual stack switching in assembly (sched.S)
+- **Tick System**: Simulated time counter incremented on each yield
+- **Selection**: Highest priority ready task, round-robin within priority level
+- **Task States**: RUNNING, READY, BLOCKED, ZOMBIE
 
-### Memory Allocation
-- **Algorithm**: First-fit with free-list coalescing
-- **Block Structure**: Each allocation has metadata (size, free flag, linked list pointers)
-- **Coalescence**: Adjacent free blocks are automatically merged to reduce fragmentation
-- **Block Splitting**: Large allocations are split if remainder is useful
+### Memory Manager Design
+- **Algorithm**: First-fit allocation with free-list coalescing
+- **Block Metadata**: Size, free flag, prev/next pointers
+- **Coalescence**: Adjacent free blocks automatically merge
+- **Block Splitting**: Large allocations split if remainder useful
+- **Heap Size**: 64KB (configurable at initialization)
 
-### Process Management
-- **Hierarchy**: Tracks parent-child relationships
+### Process Management Design
+- **Hierarchy**: Parent-child relationships tracked (max 8 children per parent)
 - **States**: CREATED → RUNNING → ZOMBIE → FREE
-- **Stack**: Each process allocated 2KB private stack via malloc
-- **Signals**: Framework for signal handlers (extensible)
+- **Stack**: 2KB private stack allocated per process via malloc
+- **Signals**: Framework for 16 signals per process (extensible)
+- **Accounting**: CPU ticks tracked per process
 
-## 🔧 Extending kacchiOS
+## 🔧 How to Extend kacchiOS
 
-### Adding a New Command
+### Add a New CLI Command
 
-Edit `kernel.c`:
+Edit [src/kernel/kernel.c](src/kernel/kernel.c):
+
 ```c
-} else if (strcmp(input, "newcmd") == 0) {
-    my_function();
+else if (strcmp(input, "mycommand") == 0) {
+    serial_puts("My command output\n");
 } else if (strcmp(input, "help") == 0) {
-    serial_puts("Commands: ... newcmd ...\n");
-```
-
-### Adding to Memory Manager
-
-Use `malloc()` and `free()` like standard C:
-```c
-void *buf = malloc(256);
-if (buf) {
-    /* use buf */
-    free(buf);
+    serial_puts("Commands: ps, plist, mem, memdump, clear, yield, create, exit, mycommand, help\n");
 }
 ```
 
-### Creating Processes
+### Use Dynamic Memory
 
 ```c
-int pid = proc_create(0);  /* Create child of process 0 */
+// Allocate memory
+int *array = (int*)malloc(100 * sizeof(int));
+if (array == NULL) {
+    serial_puts("Memory allocation failed\n");
+    return;
+}
+
+// Use memory
+array[0] = 42;
+
+// Free memory
+free(array);
+```
+
+### Create a New Process
+
+```c
+int pid = proc_create(0);  // Create as child of kernel (PID 0)
 if (pid > 0) {
-    serial_puts("Created process ");
+    serial_puts("Process created with PID: ");
     print_u32(pid);
+    serial_puts("\n");
+} else {
+    serial_puts("Process creation failed\n");
 }
 ```
 
-## 📊 Features by Category
+### Create a New Task
 
-### Must-Have (✅ Implemented)
-- Bootloader
-- Serial I/O
-- Scheduler with task creation/yield
-- Memory allocation (malloc/free)
-- Process creation/termination
-- CLI shell
+```c
+void my_task(void) {
+    while (1) {
+        serial_puts("Task running\n");
+        sleep_ticks(5);  // Sleep for 5 ticks
+    }
+}
 
-### Good-to-Have (✅ Implemented)
-- Priority scheduling
-- Sleep functionality
-- Free-list coalescing
-- Process hierarchy
-- Signal handling framework
-- Heap statistics
-- Process accounting
-- Screen clearing
+// In kmain():
+create_task(my_task, 2);  // Priority 2
+```
 
-### Bonus (✅ Implemented)
-- Simulated tick counter
-- Double-free detection
-- Debug memory dump
-- Process state tracking
-- ANSI terminal control
-- Realloc support
-- Process listing with details
+## ✅ Implementation Status
 
-## 🐛 Known Limitations
+### Core Features (Completed)
+| Feature | Status | File |
+|---------|--------|------|
+| Bootloader | ✅ Complete | [src/boot/boot.S](src/boot/boot.S) |
+| Scheduler | ✅ Complete | [src/kernel/scheduler.c](src/kernel/scheduler.c) |
+| Memory Manager | ✅ Complete | [src/kernel/memory.c](src/kernel/memory.c) |
+| Process Manager | ✅ Complete | [src/kernel/process.c](src/kernel/process.c) |
+| Serial Driver | ✅ Complete | [src/drivers/serial.c](src/drivers/serial.c) |
+| CLI Shell | ✅ Complete | [src/kernel/kernel.c](src/kernel/kernel.c) |
 
-- **Single-core** — No multiprocessor support
-- **No preemption** — Relies on cooperative yielding
-- **No virtual memory** — Direct memory access
-- **No interrupts** — No hardware timer (simulated ticks only)
-- **No I/O drivers** — Serial only, no disk/network
-- **Fixed memory** — Heap size is 64KB (configured at boot)
+### Feature Completeness
+| Category | Status | Features |
+|----------|--------|----------|
+| **Must-Have** | ✅ 100% | Bootloader, Serial I/O, Scheduler, Memory, Processes, CLI |
+| **Good-to-Have** | ✅ 100% | Priority scheduling, Sleep, Coalescing, Hierarchy, Signals, Stats |
+| **Bonus** | ✅ 100% | Ticks, Double-free detection, Memory dump, Process states, ANSI control, Realloc |
 
-## 🚀 Future Enhancements
+## 🐛 Known Limitations & Future Work
 
-- Hardware timer with preemptive scheduling (PIT)
-- Interrupt Descriptor Table (IDT) and exception handling
-- Virtual memory with paging
-- File system (simple FAT-like)
-- Additional device drivers (keyboard, disk)
-- Network stack
-- IPC (inter-process communication)
+### Current Limitations
+- **Single-core** — No SMP/multi-processor support
+- **No preemption** — Tasks must cooperatively yield
+- **No virtual memory** — Direct physical memory access
+- **No interrupts** — No interrupt handling/IDT
+- **No I/O** — Serial driver only, no disk/keyboard
+- **Limited processes** — Max 32 processes, 16 tasks
 
-## 📚 Documentation
+### Planned Enhancements
+- [ ] Hardware timer (PIT) for preemptive scheduling
+- [ ] Interrupt Descriptor Table (IDT) and exception handling
+- [ ] Virtual memory with paging
+- [ ] File system (FAT-like)
+- [ ] Keyboard driver
+- [ ] Disk driver
+- [ ] Network stack
+- [ ] IPC (inter-process communication)
 
-- **[PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Detailed project organization and module responsibilities
-- **[BUILD_GUIDE.md](docs/BUILD_GUIDE.md)** - Comprehensive build and development guide
-- **[README.md](README.md)** - Quick start and feature overview (this file)
+## 📖 Learning Resources
+
+### OS Concepts Demonstrated
+- Process management and scheduling
+- Memory allocation and management
+- Context switching
+- Process hierarchies
+- Cooperative multitasking
+- Baremetal programming
+
+### Reference Materials
+- [OSDev.org](https://wiki.osdev.org/) — Comprehensive OS development wiki
+- [XINU OS](https://xinu.cs.purdue.edu/) — Similar educational OS
+- [The Little OS Book](https://littleosbook.github.io/) — Practical tutorial
+- [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/) — Textbook
+
+## 💻 Development Tips
+
+### Debugging in QEMU
+
+```bash
+# Run with GDB support
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make debug
+
+# In another terminal, connect GDB
+gdb kernel.elf
+(gdb) target remote localhost:1234
+(gdb) break kmain
+(gdb) continue
+```
+
+### Monitor Memory Usage
+
+```bash
+kacchiOS> mem
+[MEM STATS]
+  Total heap:   65536 bytes
+  Used:         1024 bytes
+  Free:         64512 bytes
+  Free blocks:  2
+  Alloc blocks: 1
+```
+
+### View Process Tree
+
+```bash
+kacchiOS> plist
+PID     PPID    STATE           CPU
+0       4294967295      RUNNING 0
+1       0       CREATED         0
+```
+
+## 📄 Documentation Files
+
+- **[README.md](README.md)** — This file (quick start & overview)
+- **[config/ORGANIZATION.md](config/ORGANIZATION.md)** — Project organization
+- **[config/RESTRUCTURING_SUMMARY.md](config/RESTRUCTURING_SUMMARY.md)** — Restructuring notes
+- **[docs/BUILD_GUIDE.md](docs/BUILD_GUIDE.md)** — Detailed build guide
+- **[config/OS_LAB_Project.pdf](config/OS_LAB_Project.pdf)** — Original project specification
+
+## 🤝 Contributing & Extending
+
+This project is designed for educational purposes. To extend it:
+
+1. **Keep code simple** — Prioritize clarity over optimization
+2. **Add comments** — Explain complex concepts and algorithms
+3. **Follow structure** — Add files to appropriate src/ directories
+4. **Update Makefile** — Add new source files to build rules
+5. **Test in QEMU** — Verify changes before committing
+
+### Code Style
+- **Naming**: snake_case for variables/functions, UPPERCASE for macros
+- **Indentation**: 4 spaces (no tabs)
+- **Comments**: Explain the "why", not the "what"
+- **Headers**: Include guards, function prototypes, clear signatures
 
 ## 📝 License
 
-MIT License - See [LICENSE](LICENSE) for details
+MIT License - See [config/LICENSE](config/LICENSE) for full text
 
-## 👨‍💻 Author
+## 👨‍💻 Created For
 
-Built for educational purposes. Designed to be understandable and extensible for OS learning.
+Educational purposes to teach operating system fundamentals through hands-on implementation and code reading.
 
 ---
 
-**Ready to run?**
+## 🎯 Quick Reference
+
+### Key Commands
+```bash
+# Build and run
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
+
+# Just compile
+docker run --rm --platform linux/amd64 -v $(pwd):/workspace kacchios-build make
+
+# Clean build
+docker run --rm --platform linux/amd64 -v $(pwd):/workspace kacchios-build make clean
+```
+
+### Inside kacchiOS Shell
+```bash
+ps                  # List tasks
+plist               # List processes  
+mem                 # Memory stats
+memdump             # Memory debug
+clear               # Clear screen
+yield               # Yield to scheduler
+create              # Create process
+exit                # Shutdown
+help                # Show commands
+```
+
+### Key Files to Understand
+1. **[src/kernel/scheduler.c](src/kernel/scheduler.c)** — How tasks are scheduled
+2. **[src/kernel/memory.c](src/kernel/memory.c)** — How memory is allocated
+3. **[src/kernel/process.c](src/kernel/process.c)** — How processes are managed
+4. **[src/kernel/kernel.c](src/kernel/kernel.c)** — Main kernel loop and CLI
+
+---
+
+**Questions?** Check the documentation or review the well-commented source code!
+
+**Ready to learn?** Run it and explore!
 
 ```bash
-# Build Docker image (first time only)
-docker build -t kacchios-build --platform linux/amd64 .
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
+```
 
 # Build and run the OS
 docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
@@ -477,6 +601,214 @@ Created with guidance from:
 
 ---
 
+## 📚 Appendix: Complete Build & Development Reference
+
+### Full Docker Build Commands
+
+**First time setup:**
+```bash
+# Build Docker image
+docker build -t kacchios-build --platform linux/amd64 .
+```
+
+**Build and run:**
+```bash
+# Full build cycle
+docker run --rm --platform linux/amd64 -v $(pwd):/workspace kacchios-build make clean
+docker run --rm --platform linux/amd64 -v $(pwd):/workspace kacchios-build make
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
+```
+
+**Or use shorthand:**
+```bash
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build bash -c "cd /workspace && make clean && make run"
+```
+
+### Detailed GDB Debugging
+
+**Terminal 1: Start QEMU in debug mode**
+```bash
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make debug
+```
+
+**Terminal 2: Connect GDB**
+```bash
+gdb kernel.elf
+(gdb) target remote localhost:1234
+(gdb) break kmain
+(gdb) continue
+(gdb) step
+(gdb) next
+(gdb) print variable_name
+(gdb) backtrace
+```
+
+### Project Organization Reference
+
+```
+kacchiOS/
+├── src/                              # Source code
+│   ├── boot/                         # Bootloader & initialization
+│   │   ├── boot.S                    # Multiboot bootloader (x86 asm)
+│   │   ├── sched.S                   # Context switch (x86 asm)
+│   │   └── link.ld                   # Linker script
+│   │
+│   ├── kernel/                       # Core OS components
+│   │   ├── kernel.c                  # Main kernel & CLI shell
+│   │   ├── scheduler.c/.h            # Task scheduler (cooperative)
+│   │   ├── memory.c/.h               # Heap allocator (malloc/free)
+│   │   ├── process.c/.h              # Process manager
+│   │   ├── string.c/.h               # String utilities
+│   │   ├── types.h                   # Type definitions
+│   │   └── io.h                      # I/O port macros
+│   │
+│   └── drivers/                      # Device drivers
+│       └── serial.c/.h               # Serial port (COM1) driver
+│
+├── bin/                              # Build output (auto-generated)
+│   └── *.o                           # Compiled object files
+│
+├── config/                           # Configuration & metadata
+│   ├── LICENSE                       # MIT License
+│   ├── Dockerfile                    # Docker build environment
+│   ├── Makefile                      # Build rules
+│   └── OS_LAB_Project.pdf            # Original specification
+│
+├── kernel.elf                        # Final kernel executable (generated)
+├── Readme.md                         # This comprehensive guide
+└── .git/                             # Git repository
+```
+
+### Understanding Module Dependencies
+
+```
+kernel.c (main kernel)
+  ├── includes scheduler.h
+  ├── includes memory.h
+  ├── includes process.h
+  └── includes serial.h
+       └── depends on io.h
+
+scheduler.h → types.h
+memory.h → types.h
+process.h → types.h
+```
+
+### Common Development Workflows
+
+**Add a new CLI command:**
+1. Edit `src/kernel/kernel.c`
+2. Add to command parsing in main loop
+3. Update help text
+4. Test with `make run`
+
+**Add a new subsystem:**
+1. Create `.c` and `.h` files in `src/kernel/` or `src/drivers/`
+2. Update `Makefile` with new object file rule
+3. Include header in `kernel.c`
+4. Implement and test
+
+**Debug a crash:**
+```bash
+make debug          # Terminal 1: Start QEMU in debug mode
+gdb kernel.elf      # Terminal 2: Connect debugger
+(gdb) target remote localhost:1234
+(gdb) break kmain
+(gdb) continue
+(gdb) bt            # See call stack when crash occurs
+```
+
+### Troubleshooting
+
+**Problem: "as --32: command not found"**
+- Solution: Use Docker with `--platform linux/amd64`
+- On ARM64 hosts, the 32-bit assembler isn't available
+
+**Problem: "serial.h: No such file or directory"**
+- Solution: Check Makefile include paths: `-Isrc/kernel -Isrc/drivers`
+- Rebuild with `make clean && make`
+
+**Problem: QEMU hangs after startup**
+- This is normal - the OS is waiting for input
+- Type commands like `ps`, `mem`, or `exit`
+
+**Problem: "Too many open files"**
+- Docker resource limit
+- Increase with: `docker run --ulimit nofile=1024:1024 ...`
+
+### File Organization Rationale
+
+**Why separate `src/boot/`?**
+- Assembly code is isolated from C code
+- Makes bootloader easy to find and modify
+- Separate from kernel logic
+
+**Why `src/kernel/` not `src/core/`?**
+- Standard naming convention
+- Clear that this is the kernel subsystem
+- Easy for students to understand
+
+**Why `config/` not root?**
+- Keeps root clean (only README, Makefile)
+- Groups build/config files together
+- config files are secondary to source
+
+**Why `bin/` for object files?**
+- Standard convention in many projects
+- Easy to see what's generated vs committed
+- Single `make clean` removes all
+
+### Performance Notes
+
+- **No optimization by default** — Use `-O2` in CFLAGS for speed
+- **No caching** — Memory allocations are simple first-fit
+- **No parallelism** — Single-core, cooperative multitasking
+- **Educational focus** — Correctness over speed
+
+### Memory Efficiency
+
+- Scheduler: ~1KB per task (PCB + references)
+- Memory manager: ~16 bytes per allocation (metadata)
+- Process manager: ~200 bytes per process (structure)
+- Total overhead: ~5% of 64KB heap
+
+### Next Steps After Running
+
+1. **Explore the code** — Start with `src/kernel/kernel.c`
+2. **Modify a task** — Change `task_a` or `task_b` behavior
+3. **Add a command** — Implement your own CLI command
+4. **Create a process** — Call `proc_create()` from a command
+5. **Allocate memory** — Use `malloc()` and `free()`
+
+### Related Learning Resources
+
+**OS Concepts:**
+- [Operating Systems: Three Easy Pieces](https://pages.cs.wisc.edu/~remzi/OSTEP/) - Free textbook
+- [OSDev Wiki](https://wiki.osdev.org/) - Comprehensive reference
+
+**x86 Assembly:**
+- [x86-64 System V ABI](https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf)
+- [Intel x86 Reference](https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d.pdf)
+
+**Educational OS Projects:**
+- [XINU OS](https://xinu.cs.purdue.edu/) - Similar to kacchiOS
+- [Linux from Scratch](http://www.linuxfromscratch.org/) - Build your own Linux
+
+### Questions? Issues?
+
+1. **Check the source code** — Well-commented and educational
+2. **Review the Makefile** — Understand the build process
+3. **Test in QEMU** — Add debug output with `serial_puts()`
+4. **Read OSDev docs** — Comprehensive reference for OS concepts
+
+---
+
 **Questions or contributions?** Feel free to open issues or submit pull requests!
 
-**For submission requirements**, see [config/ORGANIZATION.md](config/ORGANIZATION.md) and [config/RESTRUCTURING_SUMMARY.md](config/RESTRUCTURING_SUMMARY.md).
+**Happy learning! 🚀**
+
+```bash
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
+```
+
+Explore it. Extend it. Learn from it.
