@@ -1,0 +1,95 @@
+================================================================================
+                     kacchiOS - Final Project Structure
+================================================================================
+
+ROOT DIRECTORY:
+├── Makefile                     # Build automation
+├── README.md                    # Quick start guide  
+├── PROJECT_STRUCTURE.md         # Directory organization
+└── .git/                        # Version control
+
+SOURCE CODE:
+src/
+├── boot/                        # Bootloader & CPU initialization
+│   ├── boot.S                   # x86 Multiboot bootloader
+│   ├── sched.S                  # Context switching (ASM)
+│   └── link.ld                  # Linker script
+│
+├── kernel/                      # Core OS subsystems
+│   ├── kernel.c                 # Main kernel + CLI
+│   ├── scheduler.c/.h           # Cooperative scheduler
+│   ├── memory.c/.h              # Heap allocator
+│   ├── process.c/.h             # Process manager
+│   ├── string.c/.h              # String utilities
+│   ├── types.h                  # Type definitions
+│   └── io.h                     # I/O macros
+│
+├── drivers/                     # Hardware drivers
+│   ├── serial.c/.h              # Serial (COM1) driver
+│   └── (future drivers)
+│
+└── managers/                    # Reserved for future
+
+BUILD OUTPUT:
+bin/                            # Generated .o files (auto-cleaned)
+kernel.elf                      # Final bootable kernel (generated)
+
+CONFIGURATION & DOCS:
+config/
+├── Dockerfile                  # Docker image definition
+├── LICENSE                     # MIT License
+├── ORGANIZATION.md             # Organization notes
+├── RESTRUCTURING_SUMMARY.md    # Restructuring changes
+└── OS_LAB_Project.pdf          # Project specification
+
+DOCUMENTATION:
+docs/
+├── PROJECT_STRUCTURE.md        # Full structure documentation
+├── BUILD_GUIDE.md              # Build instructions
+└── (future documentation)
+
+================================================================================
+
+KEY IMPROVEMENTS:
+✅ Configuration files organized in config/ directory
+✅ Source code cleanly separated from config (src/ vs config/)
+✅ Build artifacts isolated in bin/
+✅ Documentation centralized in docs/
+✅ Clean, professional project structure for submission
+✅ All necessary files in proper locations
+
+BUILD FLOW:
+src/ → make → bin/*.o → ld → kernel.elf → qemu
+
+DOCKER BUILD & RUN:
+docker build -t kacchios-build --platform linux/amd64 .
+docker run --rm -it --platform linux/amd64 -v $(pwd):/workspace kacchios-build make run
+
+FEATURES:
+✅ Cooperative round-robin scheduler with priorities
+✅ Dynamic memory manager (malloc/free/realloc)
+✅ Multi-process manager with parent-child relationships
+✅ Interactive CLI with 8 commands
+✅ Serial driver (COM1 at 38400 baud)
+✅ 64KB heap allocation
+✅ Process accounting and signal handling
+✅ Clean, documented, modular code
+
+FILES MOVED TO config/:
+- Dockerfile → config/Dockerfile
+- LICENSE → config/LICENSE
+- ORGANIZATION.md → config/ORGANIZATION.md
+- RESTRUCTURING_SUMMARY.md → config/RESTRUCTURING_SUMMARY.md
+- OS_LAB_Project.pdf → config/OS_LAB_Project.pdf
+
+STATISTICS:
+- Total lines of code: ~1200
+- Source files: 13 (.c/.h files)
+- Assembly files: 2 (.S files)
+- Build system: 1 (Makefile)
+- Documentation: 5 files
+
+================================================================================
+Last Updated: January 2, 2026
+Project Status: Complete & Ready for Submission
+================================================================================
