@@ -41,6 +41,7 @@ void task_b(void) {
 void kmain(void) {
     char input[MAX_INPUT];
     int pos = 0;
+    int should_exit = 0;
     
     /* Initialize hardware and managers */
     serial_init();
@@ -67,7 +68,7 @@ void kmain(void) {
     serial_puts("Running null process (CLI). Type 'ps', 'plist', 'mem', 'memdump', 'help'\n");
 
     /* Main loop - the null process (cooperative) */
-    while (1) {
+    while (!should_exit) {
         serial_puts("kacchiOS> ");
         pos = 0;
 
@@ -100,8 +101,11 @@ void kmain(void) {
                 serial_clear();
             } else if (strcmp(input, "yield") == 0) {
                 yield();
+            } else if (strcmp(input, "exit") == 0) {
+                serial_puts("Shutting down kacchiOS...\n");
+                should_exit = 1;
             } else if (strcmp(input, "help") == 0) {
-                serial_puts("Commands: ps, plist, mem, memdump, clear, yield, help\n");
+                serial_puts("Commands: ps, plist, mem, memdump, clear, yield, exit, help\n");
             } else {
                 serial_puts("You typed: ");
                 serial_puts(input);
@@ -113,5 +117,6 @@ void kmain(void) {
         yield();
     }
 
-    for (;;) { __asm__ volatile ("hlt"); }
+    serial_puts("kacchiOS exiting...\n");
+    return;
 }

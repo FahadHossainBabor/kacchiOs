@@ -57,6 +57,7 @@ kacchiOS is a complete bare-metal OS kernel built from scratch for educational p
 | `memdump` | Debug dump of all heap allocations with addresses |
 | `clear` | Clear the screen (ANSI escape codes) |
 | `yield` | Manually yield to scheduler |
+| `exit` | Shutdown the OS and halt the CPU |
 | `help` | Show available commands |
 
 ## 🚀 Quick Start
@@ -134,8 +135,9 @@ kacchiOS> memdump
 kacchiOS> clear
 (screen clears)
 
-kacchiOS> help
-Commands: ps, plist, mem, memdump, clear, yield, help
+kacchiOS> exit
+Shutting down kacchiOS...
+(CPU halts)
 ```
 
 ## 📁 Project Structure
